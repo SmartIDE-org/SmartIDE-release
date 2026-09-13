@@ -1,0 +1,41 @@
+name: Update README
+
+# Keeps README.md's download section and release table in step with the releases themselves.
+on:
+  release:
+    types: [published, edited, deleted]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Two releases published close together must not race each other's README commits.
+concurrency:
+  group: update-readme
+  cancel-in-progress: false
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Regenerate README from the published releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: python3 .github/scripts/update_readme.py
+
+      - name: Commit README if it changed
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "README is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "README: update latest releases"
+          git push origin HEAD:main
