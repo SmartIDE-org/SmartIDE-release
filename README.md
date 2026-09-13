@@ -15,6 +15,29 @@ This repo is for publishing SmartIDE APKs.
 
 SmartIDE EAP (`org.smartide.code.eap`) is the early-access build of SmartIDE. It installs alongside the Play Store app and keeps its own data.
 
+### What's new in v12.6
+
+**VS Code**
+- VS Code now runs upstream Code-OSS, and no longer hangs on "Starting VS Code...".
+- Laid out for phones: the accessory bar stays on screen and is tappable, and Back closes context menus.
+- Setup no longer needs proot-distro, and the server restarts when you open another project.
+
+**AI Coding Agent**
+- New providers: OpenAI, DeepSeek, xAI (Grok), Mistral AI, Z.ai (GLM), Moonshot AI (Kimi) and NVIDIA NIM.
+- Up-to-date default models for every provider, and thinking works again with the newest Claude models.
+
+**Project View and menus**
+- The Project View is IntelliJ's own, and Expand Recursively no longer blanks the tree.
+- Menus and popups behave like IntelliJ's: nested submenus open instead of closing the popup.
+
+**Run and terminal**
+- Run no longer reinstalls a toolchain that is already installed.
+- The terminal's bootstrap is extracted once instead of on every launch.
+- The Bazel framework installs from packages.
+
+**Stability**
+- Faster startup, and fixes for crashes and freezes in session restore, icon loading, agent tool results, the folder picker and terminal scrolling.
+
 ## All recent releases
 
 The latest five releases of every app published here. **SmartIDE EAP** and **SmartIDE Termux** are different apps, not versions of one another.

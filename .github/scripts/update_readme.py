@@ -1,7 +1,8 @@
 """Regenerates README.md from this repository's published releases.
 
 Run by .github/workflows/update-readme.yml whenever a release is published, edited or deleted.
-The top section always shows the newest `smartide-eap-*` release; the table below lists the
+The top section always shows the newest `smartide-eap-*` release, with the `## What's new`
+section of its release notes; the table below lists the
 latest five releases of every app, labelled by app, so older builds of a different app are not
 mistaken for older versions of SmartIDE EAP.
 """
@@ -53,6 +54,21 @@ def asset(release, abi):
     return next((a for a in release["assets"] if a["name"].endswith(f"_{abi}.apk")), None)
 
 
+def whats_new(release):
+    """The body of the release notes' `## What's new` section, or "" if the notes have none."""
+    lines = (release.get("body") or "").replace("\r\n", "\n").split("\n")
+    section, inside = [], False
+    for line in lines:
+        if line.strip().lower().startswith("## "):
+            if inside:
+                break
+            inside = line.strip().lower() == "## what's new"
+            continue
+        if inside:
+            section.append(line)
+    return "\n".join(section).strip()
+
+
 def render(releases):
     eap = next((release for release in releases if release["tag_name"].startswith("smartide-eap-")), None)
     top = ""
@@ -71,6 +87,13 @@ def render(releases):
 {chr(10).join(lines)}
 
 SmartIDE EAP (`org.smartide.code.eap`) is the early-access build of SmartIDE. It installs alongside the Play Store app and keeps its own data.
+
+"""
+        notes = whats_new(eap)
+        if notes:
+            top += f"""### What's new in {version(eap)}
+
+{notes}
 
 """
     rows = []
